@@ -102,17 +102,26 @@ get_config() {
     # Arguments:
     #   1: the value to extract
     #   2: config file(s) to search in
-    #TODO: handle multiple config files
-    local tmp
+    local tmp pholder files value
 
-    tmp="$(fq "$1" "$2")"
-    tmp="${tmp//\"/}"
+    pholder="${1-}"
+    shift
+    files=("$@")
 
-    if [ "$tmp" == "null" ]; then
-        echo ''
-    else
-        echo "$tmp"
-    fi
+    value=''
+    for f in "${files[@]}"; do
+        tmp="$(fq "$pholder" "$f")"
+        tmp="${tmp//\"/}"
+
+        if [ "$tmp" == "null" ]; then
+            continue
+        else
+            value="$tmp"
+            break
+        fi
+    done
+
+    echo "$value"
 }
 
 replace_placeholder() {
@@ -132,12 +141,12 @@ main() {
     local tmp
     while true; do
         pholder=$(get_placeholder "$left_delimiter" \
-								  "$right_delimiter" "$output_stream")
+                                  "$right_delimiter" "$output_stream")
         if [ -z "$pholder" ]; then
             break;  # no more placeholders
         fi
 
-        value="$(get_config "$pholder" "${config_files[*]}")"
+        value="$(get_config "$pholder" "${config_files[@]}")"
         if [ -z "$value" ]; then
             die "Placeholder '$pholder' not found." 64
         fi

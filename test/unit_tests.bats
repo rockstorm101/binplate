@@ -44,20 +44,20 @@ teardown_file() {
 	assert_output ".my-world"
 }
 
-# @test "get config" {
-# 	run get_config '.type' "$tempconfig"
-# 	assert_output "dog"
-# }
+@test "get config" {
+	run get_config '.type' "$_CONFIG"
+	assert_output "dog"
+}
 
-# @test "get missing config" {
-# 	run get_config '.foo' "$tempconfig"
-# 	assert_output "null"
-# }
+@test "get config returns empty string on missing config" {
+	run get_config '.foo' "$_CONFIG"
+	assert_output ''
+}
 
-# @test "get config two files" {
-# 	run get_config '.race' "${tempconfig} ${tempconfig2}"
-# 	assert_output "Bar"
-# }
+@test "get config two files" {
+	run get_config '.race' "${_CONFIG}" "${_CONFIG_2}"
+	assert_output "Bar"
+}
 
 @test "replace placeholder single brackets" {
 	run replace_placeholder "{ .world }" "Earth" "Hello { .world }." 
