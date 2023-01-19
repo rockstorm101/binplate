@@ -40,6 +40,11 @@ teardown_file() {
 	assert_output ".world"
 }
 
+@test "get placeholder with dash" {
+	run get_placeholder "{{ " "" " }}" "Hello {{ .my-world }}."
+	assert_output ".my-world"
+}
+
 # @test "get config" {
 # 	run get_config '.type' "$tempconfig"
 # 	assert_output "dog"

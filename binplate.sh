@@ -79,6 +79,7 @@ get_placeholder() {
     #   3: the right delimiter
     #   4: string to search in
     local tmp
+    ptn="[0-9a-zA-Z._-]+"
 
     # escape all chars in delimiters to not fail next regex
     # See: https://apple.stackexchange.com/a/363400
@@ -89,7 +90,7 @@ get_placeholder() {
     # search for placeholder
     # `head -n 1` to select only the first match in case there's more
     # than one per line
-    tmp="$(grep -o -m 1 -E "${fp}${2}${bp}" <(echo "$4") | head -n 1)"
+    tmp="$(grep -o -m 1 -E "${fp}${ptn}${bp}" <(echo "$4") | head -n 1)"
 
     # remove leading and trailing delimiter strings
     tmp="$(sed -E "s/^${fp}//" <(echo "$tmp"))"
@@ -125,15 +126,14 @@ replace_placeholder() {
 
 main() {
     parse_params "$@"
-    pattern="[0-9a-zA-Z.-_]+"
 
     output_stream=$(<"$input_file")
     config_files=("${args[@]}")
 
     local tmp
     while true; do
-        pholder=$(get_placeholder "$left_delimiter" "$pattern" \
-                              "$right_delimiter" "$output_stream")
+        pholder=$(get_placeholder "$left_delimiter" \
+								  "$right_delimiter" "$output_stream")
         if [ -z "$pholder" ]; then
             break;  # no more placeholders
         fi
