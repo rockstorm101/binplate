@@ -10,6 +10,7 @@ _common_setup_file() {
     cat <<EOF > "${_CONFIG}"
 name: Foo
 type: dog
+with-dash: serpent
 EOF
     cat <<EOF > "${_CONFIG_2}"
 race: Bar

@@ -49,6 +49,11 @@ teardown_file() {
     assert_output "dog"
 }
 
+@test "get config placeholder with dash" {
+    run get_config '."with-dash"' "$_CONFIG"
+    assert_output "serpent"
+}
+
 @test "get config returns empty string on missing config" {
     run get_config '.foo' "$_CONFIG"
     assert_output ''
