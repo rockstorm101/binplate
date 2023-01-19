@@ -16,32 +16,31 @@ teardown_file() {
 }
 
 @test "get placeholder with single brackets" {
-	run get_placeholder "{ " "[a-zA-Z0-9.-_]+" " }" "Hello { .world }."
+	run get_placeholder "{ " " }" "Hello { .world }."
 	assert_output ".world"
 }
 @test "get placeholder with double brackets" {
-	run get_placeholder "{{ " "[a-zA-Z0-9.-_]+" " }}" "Hello {{ .world }}."
+	run get_placeholder "{{ " " }}" "Hello {{ .world }}."
 	assert_output ".world"
 }
 
 @test "get placeholder with angle brackets" {
-	run get_placeholder '<< ' "[0-9a-zA-Z.-_]+" ' >>' "Hello << .world >>."
+	run get_placeholder '<< ' ' >>' "Hello << .world >>."
 	assert_output ".world"
 }
 
 @test "get placeholder no placeholders" {
-	run get_placeholder '<<' "[0-9a-zA-Z.-_]+" '>>' "Hello world."
+	run get_placeholder '<<' '>>' "Hello world."
 	[ -z "$output" ]
 }
 
 @test "get placeholder two same line" {
-	run get_placeholder '<< ' "[0-9a-zA-Z.-_]+" ' >>' \
-		"Hello << .world >><< .next >>"
+	run get_placeholder '<< ' ' >>' "Hello << .world >><< .next >>"
 	assert_output ".world"
 }
 
 @test "get placeholder with dash" {
-	run get_placeholder "{{ " "" " }}" "Hello {{ .my-world }}."
+	run get_placeholder "{{ " " }}" "Hello {{ .my-world }}."
 	assert_output ".my-world"
 }
 

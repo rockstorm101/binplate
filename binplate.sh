@@ -75,9 +75,8 @@ parse_params() {
 get_placeholder() {
     # Arguments:
     #   1: the left delimiter
-    #   2: the pattern for the placeholder
-    #   3: the right delimiter
-    #   4: string to search in
+    #   2: the right delimiter
+    #   3: string to search in
     local tmp
     ptn="[0-9a-zA-Z._-]+"
 
@@ -85,12 +84,12 @@ get_placeholder() {
     # See: https://apple.stackexchange.com/a/363400
     # Had to exclude '<' and '>' from this trick for some reason
     fp="$(sed 's/[^<>]/\\&/g' <(echo "$1"))"
-    bp="$(sed 's/[^<>]/\\&/g' <(echo "$3"))"
+    bp="$(sed 's/[^<>]/\\&/g' <(echo "$2"))"
 
     # search for placeholder
     # `head -n 1` to select only the first match in case there's more
     # than one per line
-    tmp="$(grep -o -m 1 -E "${fp}${ptn}${bp}" <(echo "$4") | head -n 1)"
+    tmp="$(grep -o -m 1 -E "${fp}${ptn}${bp}" <(echo "$3") | head -n 1)"
 
     # remove leading and trailing delimiter strings
     tmp="$(sed -E "s/^${fp}//" <(echo "$tmp"))"
