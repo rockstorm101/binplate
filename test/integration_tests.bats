@@ -72,3 +72,12 @@ EOF
     expected_output="$(cat "$out_file")"
     assert_output "$expected_output"
 }
+
+@test "replace with fq options" {
+    template=$(mktemp --tmpdir=$_TEMP)
+    cat <<EOF >${template}
+Good {{ .type }}, {{ .name }}!
+EOF
+    run ./binplate.sh -f "-d yaml" -i "$template" "$_CONFIG"
+    assert_output "Good dog, Foo!"
+}

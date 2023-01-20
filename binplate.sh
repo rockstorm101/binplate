@@ -17,8 +17,7 @@ Options:
   -b, --blanks       TODO. Allow for missing values in configuration
                      FILE instead of failing and leave them blank
   -f, --fq-options OPTS
-                     TODO. Options for the 'jq' command
-                     (e.g. '-d yaml')
+                     Options for the 'jq' command (e.g. '-d yaml')
   -h, --help         Print this help and exit
   -i, --input FILE   Input file (default: stdin)
   -l, --left-delimiter STR
@@ -49,14 +48,16 @@ parse_params() {
     left_delimiter='{{ '
     output_file=/dev/stdout
     right_delimiter=' }}'
+    fq_opts=''
 
     while :; do
         case "${1-}" in
-            -r | --right-delimiter) right_delimiter="${2-}"; shift ;;
-            -l | --left-delimiter) left_delimiter="${2-}"; shift ;;
+            -f | --fq-options) fq_opts="${2-}"; shift ;;
             -h | --help) usage ;;
             -i | --input) input_file="${2-}"; shift ;;
+            -l | --left-delimiter) left_delimiter="${2-}"; shift ;;
             -o | --output) output_file="${2-}"; shift ;;
+            -r | --right-delimiter) right_delimiter="${2-}"; shift ;;
             -v | --verbose) set -x ;;
             -?*) die "Unknown option: $1" ;;
             *) break ;;
@@ -109,16 +110,19 @@ get_placeholder() {
 get_config() {
     # Arguments:
     #   1: the value to extract
-    #   2: config file(s) to search in
-    local tmp pholder files value
+    #   2: options for fq
+    #   3: config file(s) to search in
+    local args files fq_opts pholder value tmp
 
     pholder="${1-}"
-    shift
+    fq_opts="${2-}"
+    shift 2
     files=("$@")
 
     value=''
     for f in "${files[@]}"; do
-        tmp="$(fq "$pholder" "$f")"
+        # shellcheck disable=SC2086
+        tmp="$(fq $fq_opts "$pholder" "$f")"
         tmp="${tmp//\"/}"
 
         if [ "$tmp" == "null" ]; then
@@ -154,7 +158,7 @@ main() {
             break;  # no more placeholders
         fi
 
-        value="$(get_config "$pholder" "${config_files[@]}")"
+        value="$(get_config "$pholder" "$fq_opts" "${config_files[@]}")"
         if [ -z "$value" ]; then
             die "Placeholder '$pholder' not found." 64
         fi

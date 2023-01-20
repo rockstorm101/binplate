@@ -19,6 +19,7 @@ teardown_file() {
     run get_placeholder "{ " " }" "Hello { .world }."
     assert_output ".world"
 }
+
 @test "get placeholder with double brackets" {
     run get_placeholder "{{ " " }}" "Hello {{ .world }}."
     assert_output ".world"
@@ -50,22 +51,22 @@ teardown_file() {
 }
 
 @test "get config" {
-    run get_config '.type' "$_CONFIG"
+    run get_config '.type' '' "$_CONFIG"
     assert_output "dog"
 }
 
 @test "get config placeholder with dash" {
-    run get_config '."with-dash"' "$_CONFIG"
+    run get_config '."with-dash"' '' "$_CONFIG"
     assert_output "serpent"
 }
 
 @test "get config returns empty string on missing config" {
-    run get_config '.foo' "$_CONFIG"
+    run get_config '.foo' '' "$_CONFIG"
     assert_output ''
 }
 
 @test "get config two files" {
-    run get_config '.race' "${_CONFIG}" "${_CONFIG_2}"
+    run get_config '.race' '' "${_CONFIG}" "${_CONFIG_2}"
     assert_output "Bar"
 }
 
