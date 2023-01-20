@@ -6,23 +6,31 @@ usage() {
     cat <<EOF
 Usage: ${script_name} [-hv] FILE [FILE...]
 
-Repace the contents of input in accordance with FILE. It uses 'fq' to
-read configurations from FILE. Therefore, it supports all the formats
-supported by 'fq'.
+Fill in a templated input in accordance with the values stored in
+configuration FILE.
 
-By default placeholders must be in the form '{{ placeholder }}'.
+By default, template placeholders are exptected to be in the form
+'{{ placeholder }}'. It uses 'fq' to read from FILE. Therefore, it
+supports all the formats supported by 'fq'.
 
 Options:
-  -f, --fq-options OPTS       WIP. Options for the 'jq' command
-                              (e.g. '-d yaml')
-  -h, --help                  Print this help and exit
-  -i, --input FILE            Input file (default: stdin)
-  -l, --left-delimiter STR    String that delimites placeholders from
-                              the left (default: '{{ ')
-  -o, --output FILE           Output file (default: stdout)
-  -r, --right-delimiter STR   String that delimites placeholders from
-                              the right (default: ' }}')
-  -v, --verbose               Print script debug info
+  -b, --blanks       TODO. Allow for missing values in configuration
+                     FILE instead of failing and leave them blank
+  -f, --fq-options OPTS
+                     TODO. Options for the 'jq' command
+                     (e.g. '-d yaml')
+  -h, --help         Print this help and exit
+  -i, --input FILE   Input file (default: stdin)
+  -l, --left-delimiter STR
+                     String that delimites placeholders from the left
+                     (default: '{{ ')
+  -o, --output FILE  Output file (default: stdout)
+  -r, --right-delimiter STR
+                     String that delimites placeholders from the right
+                     (default: ' }}')
+  -u, --unchanged    TODO. Allow for missing values in configuration
+                     FILE instead of failing and leave them unchanged
+  -v, --verbose      Print script debug info
 EOF
   exit
 }
