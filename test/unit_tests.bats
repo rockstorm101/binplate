@@ -44,6 +44,11 @@ teardown_file() {
     assert_output ".my-world"
 }
 
+@test "get placeholder with quotes" {
+    run get_placeholder "{{ " " }}" 'Hello {{ ."my-world" }}.'
+    assert_output '."my-world"'
+}
+
 @test "get config" {
     run get_config '.type' "$_CONFIG"
     assert_output "dog"

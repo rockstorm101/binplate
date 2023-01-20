@@ -78,7 +78,7 @@ get_placeholder() {
     #   2: the right delimiter
     #   3: string to search in
     local tmp
-    ptn="[0-9a-zA-Z._-]+"
+    ptn='[0-9a-zA-Z"._-]+'
 
     # escape all chars in delimiters to not fail next regex
     # See: https://apple.stackexchange.com/a/363400
