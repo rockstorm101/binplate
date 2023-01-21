@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Setup Test Dependencies
-      run:  sudo apt install -y fq bats
+      run:  sudo apt install -y fq bats bats-assert
 
     - name: Checkout Code
       uses: actions/checkout@v3
