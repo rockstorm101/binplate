@@ -7,15 +7,16 @@ usage() {
 Usage: ${script_name} [-hv] FILE [FILE...]
 
 Fill in a templated input in accordance with the values stored in
-configuration FILE.
+configuration FILE. If more than one FILE is given, configurations
+from the first FILE will be preferred over the second one and so on.
 
 By default, template placeholders are exptected to be in the form
 '{{ placeholder }}'. It uses 'fq' to read from FILE. Therefore, it
 supports all the formats supported by 'fq'.
 
 Options:
-  -b, --blanks       TODO. Allow for missing values in configuration
-                     FILE instead of failing and leave them blank
+  -b, --blanks       Allow for missing values in configuration FILE
+                     and replace them with blanks instead of failing
   -f, --fq-options OPTS
                      Options for the 'jq' command (e.g. '-d yaml')
   -h, --help         Print this help and exit
@@ -27,14 +28,14 @@ Options:
   -r, --right-delimiter STR
                      String that delimites placeholders from the right
                      (default: ' }}')
-  -u, --unchanged    TODO. Allow for missing values in configuration
-                     FILE instead of failing and leave them unchanged
   -v, --verbose      Print script debug info
 EOF
-  exit
+#   -u, --unchanged    TODO. Allow for missing values in configuration
+#                      FILE and leave them unchanged instead of failing
+    exit
 }
 
-msg() { echo >&2 -e "${1-}"; }
+msg() { echo >&2 -e "${script_name}:" "${1-}"; }
 die() {
     # User defined exit codes:
     #   64: Placeholder not found in configuration files
@@ -44,14 +45,16 @@ die() {
 
 parse_params() {
     # default values of variables set from params
+    blanks_flag=0
+    fq_opts=''
     input_file=/dev/stdin
     left_delimiter='{{ '
     output_file=/dev/stdout
     right_delimiter=' }}'
-    fq_opts=''
 
     while :; do
         case "${1-}" in
+            -b | --blanks)  blanks_flag=1 ;;
             -f | --fq-options) fq_opts="${2-}"; shift ;;
             -h | --help) usage ;;
             -i | --input) input_file="${2-}"; shift ;;
@@ -109,23 +112,23 @@ get_placeholder() {
 
 get_config() {
     # Arguments:
-    #   1: the value to extract
-    #   2: options for fq
-    #   3: config file(s) to search in
+    #   1:  the value to extract
+    #   2:  options for fq
+    #   3+: config file(s) to search in
     local args files fq_opts pholder value tmp
 
     pholder="${1-}"
     fq_opts="${2-}"
-    shift 2
-    files=("$@")
+    files=("${@:3}")
 
     value=''
     for f in "${files[@]}"; do
         # shellcheck disable=SC2086
         tmp="$(fq $fq_opts "$pholder" "$f")"
-        tmp="${tmp//\"/}"
+        tmp="${tmp/#\"/}"
+        tmp="${tmp/%\"/}"
 
-        if [ "$tmp" == "null" ]; then
+        if [ "$tmp" == 'null' ]; then
             continue
         else
             value="$tmp"
@@ -152,17 +155,20 @@ main() {
 
     local tmp
     while true; do
+        # Search for a placeholder in template file
         pholder=$(get_placeholder "$left_delimiter" \
                                   "$right_delimiter" "$output_stream")
         if [ -z "$pholder" ]; then
             break;  # no more placeholders
         fi
 
+        # Search for a value for the placeholder in config files
         value="$(get_config "$pholder" "$fq_opts" "${config_files[@]}")"
-        if [ -z "$value" ]; then
-            die "Placeholder '$pholder' not found." 64
+        if [ -z "$value" ] && [ "$blanks_flag" -eq 0 ]; then
+            die "Value for '$pholder' not found." 64
         fi
 
+        # Replace placeholders with value
         output_stream="$(replace_placeholder \
             "${left_delimiter}${pholder}${right_delimiter}" \
             "$value" "$output_stream")"

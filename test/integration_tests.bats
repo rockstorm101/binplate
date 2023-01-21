@@ -65,6 +65,6 @@ make_template() {
 
 @test "replace with blanks" {
     template="$(make_template 'Good {{ .pet }}, {{ .name }}!')"
-    run ./binplate.sh -f "-d yaml" -i "$template" "$_CONFIG"
-    assert_output "Good {{ .pet }}, Foo!"
+    run ./binplate.sh -b -i "$template" "$_CONFIG" 2>/dev/null
+    assert_output "Good , Foo!"
 }
