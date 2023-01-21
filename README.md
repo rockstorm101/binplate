@@ -1,5 +1,5 @@
 # BinPlate
-![Test Build Status][b1]
+![Test Status][b1]
 
 (Bin)ary to Tem(plate).
 ```
@@ -60,10 +60,10 @@ Hello Jonh, Welcome to Paradise!
 
 The above example is produced with:
 ```bash
-echo 'Hello {{ .name }}, Welcome to {{ .site }}!' | binplate /path/to/config.yml
+echo 'Hello {{ .name }}, Welcome to {{ .site }}!' | ./binplate.sh /path/to/config.yml
 ```
 
-Run `binplate --help` for more usage options.
+Run `./binplate.sh --help` for more usage options.
 
 ### Testing
 
@@ -106,4 +106,4 @@ See full [license information][5].
 [^1]: Available on Debian/Ubuntu systems with just `apt install fq`.
 
 
-[b1]: https://img.shields.io/github/actions/workflow/status/rockstorm101/binplate/test-build.yml?branch=master
+[b1]: https://img.shields.io/github/actions/workflow/status/rockstorm101/binplate/tests.yml?branch=master
