@@ -5,7 +5,6 @@ _common_setup_file() {
     _TEMP=$(mktemp -d)
     _CONFIG=${_TEMP}/config.yml
     _CONFIG_2=${_TEMP}/config2.yml
-    _TEMPLATE=${_TEMP}/plate.txt
 
     cat <<EOF > "${_CONFIG}"
 name: Foo

@@ -12,72 +12,59 @@ teardown_file() {
     rm -rf "$_TEMP"
 }
 
+make_template() {
+    # Arguments:
+    #   *: line(s) to write to file
+    local tempfile
+    tempfile=$(mktemp --tmpdir=$_TEMP)
+    for line in "$@"; do
+        echo "$line" >> "$tempfile"
+    done
+    echo "$tempfile"
+}
+
 @test "single line replace" {
-    template=$(mktemp --tmpdir=$_TEMP)
-    cat <<EOF >${template}
-Good {{ .type }}, {{ .name }}!
-EOF
+    template="$(make_template 'Good {{ .type }}, {{ .name }}!')"
     run ./binplate.sh -i "$template" "$_CONFIG"
     assert_output "Good dog, Foo!"
 }
 
 @test "multi-line replace" {
-    template=$(mktemp --tmpdir=$_TEMP)
-    cat <<EOF >${template}
-Good {{ .type }}, {{ .name }}!
-Good {{ .type }}, {{ .name }}!
-EOF
-
-    out_file=$(mktemp --tmpdir=$_TEMP)
-    cat <<EOF >${out_file}
-Good dog, Foo!
-Good dog, Foo!
-EOF
+    template="$(make_template 'Good {{ .type }}, {{ .name }}!' \
+                              'Good {{ .type }}, {{ .name }}!')"
     run ./binplate.sh -i "$template" "$_CONFIG"
-    expected_output="$(cat "$out_file")"
+    expected_output="$(echo -e 'Good dog, Foo!\nGood dog, Foo!')"
     assert_output "$expected_output"
 }
 
 @test "placeholder with spaces" {
-    template=$(mktemp --tmpdir=$_TEMP)
-    cat <<EOF >${template}
-First: {{ .health }}; second: {{ .race }}
-EOF
+    template="$(make_template 'First: {{ .health }}; second: {{ .race }}')"
     run ./binplate.sh -i "$template" "$_CONFIG_2"
     assert_output "First: could be better; second: Bar"
 }
 
 @test "fail if placeholder not found in config" {
-    template=$(mktemp --tmpdir=$_TEMP)
-    cat <<EOF >${template}
-First: {{ .gnome }}; second: {{ .race }}
-EOF
+    template="$(make_template 'First: {{ .gnome }}; second: {{ .race }}')"
     run ./binplate.sh -i "$template" "$_CONFIG_2"
     assert_failure 64
 }
 
 @test "replace from multiple config files" {
-    template=$(mktemp --tmpdir=$_TEMP)
-    cat <<EOF >${template}
-Good {{ .race }}, {{ .name }}!
-Good {{ .type }}, {{ .health }}!
-EOF
-
-    out_file=$(mktemp --tmpdir=$_TEMP)
-    cat <<EOF >${out_file}
-Good Bar, Foo!
-Good dog, could be better!
-EOF
+    template="$(make_template 'Good {{ .race }}, {{ .name }}!' \
+                              'Good {{ .type }}, {{ .health }}!')"
     run ./binplate.sh -i "$template" "$_CONFIG" "$_CONFIG_2"
-    expected_output="$(cat "$out_file")"
+    expected_output="$(echo -e 'Good Bar, Foo!\nGood dog, could be better!')"
     assert_output "$expected_output"
 }
 
 @test "replace with fq options" {
-    template=$(mktemp --tmpdir=$_TEMP)
-    cat <<EOF >${template}
-Good {{ .type }}, {{ .name }}!
-EOF
+    template="$(make_template 'Good {{ .type }}, {{ .name }}!')"
     run ./binplate.sh -f "-d yaml" -i "$template" "$_CONFIG"
     assert_output "Good dog, Foo!"
+}
+
+@test "replace with blanks" {
+    template="$(make_template 'Good {{ .pet }}, {{ .name }}!')"
+    run ./binplate.sh -f "-d yaml" -i "$template" "$_CONFIG"
+    assert_output "Good {{ .pet }}, Foo!"
 }
