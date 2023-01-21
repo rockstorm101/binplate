@@ -1,5 +1,4 @@
 # BinPlate
-![Test Status][b1]
 
 (Bin)ary to Tem(plate).
 ```
@@ -104,6 +103,3 @@ See full [license information][5].
 
 
 [^1]: Available on Debian/Ubuntu systems with just `apt install fq`.
-
-
-[b1]: https://img.shields.io/github/actions/workflow/status/rockstorm101/binplate/tests.yml?branch=master
