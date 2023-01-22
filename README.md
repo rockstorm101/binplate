@@ -62,7 +62,38 @@ The above example is produced with:
 echo 'Hello {{ .name }}, Welcome to {{ .site }}!' | ./binplate.sh /path/to/config.yml
 ```
 
-Run `./binplate.sh --help` for more usage options.
+Running `./binplate.sh --help`:
+```
+Usage: binplate [options] FILE [FILE...]
+
+Read a template, fill in placeholders in accordance with the values
+stored in configuration FILE and output the result. By default, the
+template is read from stdin and output is sent to stdout. If more than
+one FILE is given, configurations from the first FILE will be
+preferred over the second one and so on.
+
+By default, template placeholders are expected to be in the form
+'{{ placeholder }}'.
+
+It uses 'fq' to read from configuration FILE. Therefore, it supports
+all the formats supported by 'fq'.
+
+Options:
+  -b, --blanks       Allow for missing values in configuration FILE
+                     and replace them with blanks instead of failing
+  -f, --fq-options OPTS
+                     Options for the 'jq' command (e.g. '-d yaml')
+  -h, --help         Print this help and exit
+  -i, --input FILE   Input file (default: stdin)
+  -l, --left-delimiter STR
+                     String that delimits placeholders from the left
+                     (default: '{{ ')
+  -o, --output FILE  Output file (default: stdout)
+  -r, --right-delimiter STR
+                     String that delimits placeholders from the right
+                     (default: ' }}')
+  -v, --verbose      Print script debug info
+```
 
 ### Testing
 

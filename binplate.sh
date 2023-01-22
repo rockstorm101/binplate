@@ -4,15 +4,19 @@ script_name=$(basename "${BASH_SOURCE[0]}")
 
 usage() {
     cat <<EOF
-Usage: ${script_name} [-hv] FILE [FILE...]
+Usage: ${script_name} [options] FILE [FILE...]
 
-Fill in a templated input in accordance with the values stored in
-configuration FILE. If more than one FILE is given, configurations
-from the first FILE will be preferred over the second one and so on.
+Read a template, fill in placeholders in accordance with the values
+stored in configuration FILE and output the result. By default, the
+template is read from stdin and output is sent to stdout. If more than
+one FILE is given, configurations from the first FILE will be
+preferred over the second one and so on.
 
-By default, template placeholders are exptected to be in the form
-'{{ placeholder }}'. It uses 'fq' to read from FILE. Therefore, it
-supports all the formats supported by 'fq'.
+By default, template placeholders are expected to be in the form
+'{{ placeholder }}'.
+
+It uses 'fq' to read from configuration FILE. Therefore, it supports
+all the formats supported by 'fq'.
 
 Options:
   -b, --blanks       Allow for missing values in configuration FILE
@@ -22,11 +26,11 @@ Options:
   -h, --help         Print this help and exit
   -i, --input FILE   Input file (default: stdin)
   -l, --left-delimiter STR
-                     String that delimites placeholders from the left
+                     String that delimits placeholders from the left
                      (default: '{{ ')
   -o, --output FILE  Output file (default: stdout)
   -r, --right-delimiter STR
-                     String that delimites placeholders from the right
+                     String that delimits placeholders from the right
                      (default: ' }}')
   -v, --verbose      Print script debug info
 EOF
