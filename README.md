@@ -1,9 +1,9 @@
 # BinPlate
 ![Version][b1]
 
-(Bin)ary to Tem(plate).
+Template processor written in Bash.
 ```
-                  config
+                 config(s)
                     |
                     v
   input        +----------+
@@ -83,7 +83,7 @@ Options:
   -b, --blanks       Allow for missing values in configuration FILE
                      and replace them with blanks instead of failing
   -f, --fq-options OPTS
-                     Options for the 'jq' command (e.g. '-d yaml')
+                     Options for the 'fq' command (e.g. '-d yaml')
   -h, --help         Print this help and exit
   -i, --input FILE   Input file (default: stdin)
   -l, --left-delimiter STR
@@ -100,7 +100,7 @@ Options:
 
 Test suite uses the [BATS][3] framework. Running from the project root:
 ```
-bats -x --verbose-run test/
+bats test/
 ```
 
 [3]: https://github.com/bats-core/bats-core

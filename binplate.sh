@@ -15,14 +15,14 @@ preferred over the second one and so on.
 By default, template placeholders are expected to be in the form
 '{{ placeholder }}'.
 
-It uses 'fq' to read from configuration FILE. Therefore, it supports
+It uses 'fq' to read from configuration FILEs. Therefore, it supports
 all the formats supported by 'fq'.
 
 Options:
   -b, --blanks       Allow for missing values in configuration FILE
                      and replace them with blanks instead of failing
   -f, --fq-options OPTS
-                     Options for the 'jq' command (e.g. '-d yaml')
+                     Options for the 'fq' command (e.g. '-d yaml')
   -h, --help         Print this help and exit
   -i, --input FILE   Input file (default: stdin)
   -l, --left-delimiter STR
