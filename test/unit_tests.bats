@@ -84,3 +84,8 @@ teardown_file() {
     run replace_placeholder "<< .world >>" "Earth" "Hello << .world >>."
     assert_output "Hello Earth."
 }
+
+@test "replace placeholder with forward slash" {
+    run replace_placeholder "<< .world >>" "Earth/Mars" "Hello << .world >>."
+    assert_output "Hello Earth/Mars."
+}
