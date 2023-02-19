@@ -148,7 +148,11 @@ replace_placeholder() {
     #   1: the placeholder to replace
     #   2: the value to replace it with
     #   3: the string into which do the replacement
-    sed "s/${1}/${2}/g" <(echo "$3")
+
+    # escape '/' character on replace value before sed
+    replace="$(sed 's/\//\\&/g' <(echo "$2"))"
+
+    sed "s/${1}/${replace}/g" <(echo "$3")
 }
 
 main() {
